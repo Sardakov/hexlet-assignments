@@ -1,5 +1,5 @@
 @import exercise.dto.users.UsersPage
-@param UsersPage users
+@param UsersPage page
 
 <html>
     <head>
@@ -18,7 +18,7 @@
                     </tr>
                 </thead>
                     <tbody>
-                    @for(var user: users.getUsers())
+                    @for(var user: page.getUsers())
                     <tr>
                         <td><a href="/users/${user.getId()}">${user.getId()}</a></td>
                         <td>${user.getFirstName()}</td>
