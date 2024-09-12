@@ -13,20 +13,20 @@ content = @`
         </ul>
     @endif
 
-    <form action="/articles" method="post">
-        <div>
-            <label>
-                название статьи
-                <input type="text" name="title" value="${page.getTitle()}" />
-            </label>
-        </div>
-        <div>
-            <label>
-                текст
-                <input type="text" name="content" value="${page.getTitle()}" />
-            </label>
-        </div>
-        <input type="submit" value="Сохранить" />
-    </form>
+    <div class="mx-auto p-4 py-md-5">
+        <form action="/articles" method="post">
+            <div class="mb-3">
+                <label class="form-label">
+                    Название
+                    <input type="text" class="form-control" name="title" value="${page.getTitle()}" />
+                </label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Содержание</label>
+                <textarea class="form-control" rows="20" cols="70" type="text" name="content">${page.getContent()}</textarea>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Сохранить" />
+        </form>
+    </div>
 `
 )
