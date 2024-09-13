@@ -10,7 +10,7 @@ content = @`
 
             <table class="table table-striped">
                 @for(var post : page.getPosts())
-                    <tr>
+                    <tr>hexlet assignment submit
                         <td>
                             ${post.getId()}
                         </td>
