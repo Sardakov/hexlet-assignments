@@ -66,41 +66,6 @@ public class PostsController {
 //        ctx.render("posts/edit.jte", model("page", page));
 //    }
 
-//    public static void edit(Context ctx) {
-//        var id = ctx.pathParamAsClass("id", Long.class).get();
-//        var post = PostRepository.find(id)
-//                .orElseThrow(() -> new NotFoundResponse("Post not found"));
-//
-//        var page = new EditPostPage(id, post.getName(), post.getBody(), null);
-//        ctx.render("posts/edit.jte", model("page", page));
-//    }
-//
-//    public static void update(Context ctx) {
-//        var id = ctx.pathParamAsClass("id", Long.class).get();
-//        try {
-//
-//            var name = ctx.formParamAsClass("name", String.class)
-//                    .check(value -> value.length() >= 2, "Название не должно быть короче двух символов")
-//                    .get();
-//
-//            var body = ctx.formParamAsClass("body", String.class)
-//                    .check(value -> value.length() >= 10, "Пост должен быть не короче 10 символов")
-//                    .get();
-//            var post = PostRepository.find(id)
-//                    .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
-//            post.setName(name);
-//            post.setBody(body);
-//            PostRepository.save(post);
-//            ctx.redirect("posts/index.jte");
-//
-//        } catch (ValidationException e) {
-//            var name = ctx.formParam("name");
-//            var body = ctx.formParam("body");
-//            var page = new BuildPostPage(name, body, e.getErrors());
-//            ctx.render("posts/build.jte", model("page", page)).status(422);
-//        }
-//    }
-
     public static void edit(Context ctx) {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var post = PostRepository.find(id)
@@ -111,10 +76,9 @@ public class PostsController {
     }
 
     public static void update(Context ctx) {
-
         var id = ctx.pathParamAsClass("id", Long.class).get();
-
         try {
+
             var name = ctx.formParamAsClass("name", String.class)
                     .check(value -> value.length() >= 2, "Название не должно быть короче двух символов")
                     .get();
@@ -122,10 +86,8 @@ public class PostsController {
             var body = ctx.formParamAsClass("body", String.class)
                     .check(value -> value.length() >= 10, "Пост должен быть не короче 10 символов")
                     .get();
-
             var post = PostRepository.find(id)
                     .orElseThrow(() -> new NotFoundResponse("Post not found"));
-
             post.setName(name);
             post.setBody(body);
 
@@ -136,7 +98,7 @@ public class PostsController {
             var name = ctx.formParam("name");
             var body = ctx.formParam("body");
             var page = new EditPostPage(id, name, body, e.getErrors());
-            ctx.render("posts/edit.jte", model("page", page)).status(422);
+            ctx.render("posts/build.jte", model("page", page)).status(422);
         }
     }
     // END
