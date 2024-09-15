@@ -16,7 +16,7 @@ public class SessionsController {
 
     // BEGIN
     public static void index(Context ctx) {
-        var user = ctx.sessionAttribute("currentUser");
+        var user = ctx.sessionAttribute("user");
         var page = new MainPage(user);
         ctx.render("index.jte", model("page", page));
     }
@@ -27,24 +27,23 @@ public class SessionsController {
     }
 
     public static void create(Context ctx) {
-        try {
-            var user = UsersRepository.findByName(ctx.formParam("name"))
-                    .orElseThrow(() -> new NotFoundResponse("Wrong username or password"));
-            var name = ctx.formParam("name");
-            var pass = ctx.formParamAsClass("password", String.class)
-                    .check(value -> Security.encrypt(value).equals(user.getPassword()), "Wrong username or password");
-            ctx.sessionAttribute("currentUser", name);
-            ctx.redirect("/");
+        var name = ctx.formParam("name");
+        var password = ctx.formParam("password");
 
-        } catch (ValidationException e) {
-            var name = ctx.formParam("name");
-            var page = new LoginPage(name, e.getErrors().toString());
-            ctx.render("/build.jte", model("page", page));
+        var user = UsersRepository.findByName(name).orElse(null);
+
+        if (user != null && user.getPassword().equals(encrypt(password))) {
+            ctx.sessionAttribute("user", user.getName());
+            ctx.redirect("/");
+        } else {
+            var errorMessage = "Wrong username or password";
+            var page = new LoginPage(name, errorMessage);
+            ctx.render("build.jte", model("page", page));
         }
     }
 
     public static void destroy(Context ctx) {
-        ctx.sessionAttribute("currentUser", null);
+        ctx.sessionAttribute("user", null);
         ctx.redirect("/");
     }
     // END
