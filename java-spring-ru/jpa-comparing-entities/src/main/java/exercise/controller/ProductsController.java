@@ -35,19 +35,11 @@ public class ProductsController {
     // BEGIN
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Product create(@RequestBody Product data) {
-        boolean exists = productRepository.findAll().stream()
-                .anyMatch(existingProduct ->
-                        Objects.equals(existingProduct.getTitle(), data.getTitle()) &&
-                                Objects.equals(existingProduct.getPrice(), data.getPrice())
-                );
-
-        if (exists) {
-            throw new ResourceAlreadyExistsException("Product with title " +
-                    data.getTitle() + " and price " + data.getPrice() + " already exists.");
+    public Product create(@RequestBody Product product) {
+        if (productRepository.findAll().contains(product)) {
+            throw new ResourceAlreadyExistsException("Product " + product.getTitle() + " already exists");
         }
-
-        return productRepository.save(data);
+        return productRepository.save(product);
     }
     // END
 
