@@ -37,8 +37,8 @@ public class Task {
     private LocalDate updatedAt;
 
     // BEGIN
-    @ManyToOne
-    @JoinColumn(name = "assignee_id")
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     private User assignee;
     // END
 }
