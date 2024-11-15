@@ -9,6 +9,7 @@ import exercise.repository.AuthorRepository;
 import exercise.service.AuthorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,58 +30,33 @@ public class AuthorsController {
     @Autowired
     private AuthorService authorService;
 
-//    GET /authors – просмотр списка всех авторов
-//    GET /authors/{id} – просмотр конкретного автора
-//    POST /authors – добавление нового автора
-//    PUT /authors/{id} – редактирование автора. При редактировании мы должны иметь возможность поменять имя и фамилию
-//    DELETE /authors – удаление автора
-
     // BEGIN
-    @Autowired
-    private AuthorRepository authorRepository;
-
-    @Autowired
-    private AuthorMapper authorMapper;
-
-    @GetMapping("")
-    List<AuthorDTO> index() {
-        var authors = authorRepository.findAll();
-
-        return authors.stream()
-                .map(t -> authorMapper.map(t))
-                .toList();
+    @GetMapping(path = "")
+    public List<AuthorDTO> index() {
+        return authorService.getAllAuthors();
     }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    AuthorDTO show(@PathVariable Long id) {
-        var author = authorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not Found: " + id));
-        return authorMapper.map(author);
+    @GetMapping(path = "/{id}")
+    public AuthorDTO show(@PathVariable long id) {
+        return authorService.getAuthorById(id);
     }
 
-    @PostMapping("")
+    @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    AuthorDTO create(@Valid @RequestBody AuthorCreateDTO authorData) {
-        var author = authorMapper.map(authorData);
-        authorRepository.save(author);
-        return authorMapper.map(author);
+    public AuthorDTO create(@Valid @RequestBody AuthorCreateDTO authorData) {
+        return authorService.createAuthor(authorData);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     AuthorDTO update(@RequestBody @Valid AuthorUpdateDTO authorData, @PathVariable Long id) {
-        var author = authorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
-        authorMapper.update(authorData, author);
-        authorRepository.save(author);
-        return authorMapper.map(author);
+        return authorService.updateAuthor(authorData, id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void destroy(@PathVariable Long id) {
-        authorRepository.deleteById(id);
+        authorService.deleteAuthor(id);
     }
     // END
 }
